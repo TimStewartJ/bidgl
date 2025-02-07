@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.js": "/bidgl/static/js/main.d09a94e3.js",
-    "static/js/553.fac4761f.js": "/bidgl/static/js/553.fac4761f.js",
+    "main.js": "/bidgl/static/js/main.99516ed2.js",
+    "static/js/11.e5e36e40.js": "/bidgl/static/js/11.e5e36e40.js",
     "favicon.ico": "/bidgl/favicon.ico",
     "index.html": "/bidgl/index.html",
     "favicon-32.png": "/bidgl/favicon-32.png",
     "favicon-16.png": "/bidgl/favicon-16.png",
     "serve.json": "/bidgl/serve.json",
     "manifest.json": "/bidgl/manifest.json",
-    "main.d09a94e3.js.map": "/bidgl/static/js/main.d09a94e3.js.map",
-    "553.fac4761f.js.map": "/bidgl/static/js/553.fac4761f.js.map"
+    "main.99516ed2.js.map": "/bidgl/static/js/main.99516ed2.js.map",
+    "11.e5e36e40.js.map": "/bidgl/static/js/11.e5e36e40.js.map"
   },
   "entrypoints": [
-    "static/js/553.fac4761f.js",
-    "static/js/main.d09a94e3.js"
+    "static/js/11.e5e36e40.js",
+    "static/js/main.99516ed2.js"
   ]
 }
