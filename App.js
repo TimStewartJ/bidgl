@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View, CheckBox, TouchableOpacity } from 'react-native';
 import styles from './AppStyles';
 import LocationSelection from './components/LocationSelection';
 import NotificationProvider from './contexts/NotificationContext';
@@ -27,11 +27,17 @@ export default function App() {
             checkedAffiliates={checkedAffiliates}
             updateCheckedAffiliates={updateCheckedAffiliates}
           />
-          <Pressable onPress={() => setEndingToday(!endingToday)}>
-            <Text style={{ color: endingToday ? 'red' : 'black' }}>
-              Ending Today
-            </Text>
-          </Pressable>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <CheckBox
+              value={endingToday}
+              onValueChange={setEndingToday}
+            />
+            <TouchableOpacity onPress={() => setEndingToday(!endingToday)}>
+              <Text style={{ color: endingToday ? 'red' : 'black' }}>
+                Ending Today
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View>
             {checkedAffiliates.map((affiliate) => (
               <View
