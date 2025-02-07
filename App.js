@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, CheckBox, TouchableOpacity } from 'react-native';
 import styles from './AppStyles';
 import LocationSelection from './components/LocationSelection';
 import NotificationProvider from './contexts/NotificationContext';
 import Notification from './components/Notification';
 import AuctionList from './components/AuctionsList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import StorageKeys from './StorageKeys';
 
 export default function App() {
   const [checkedAffiliates, updateCheckedAffiliates] = useState([]);
   const [endingToday, setEndingToday] = useState(true);
+
+  useEffect(() => {
+    const loadEndingTodayPreference = async () => {
+      const storedEndingToday = await AsyncStorage.getItem(StorageKeys.endingTodayKey);
+      if (storedEndingToday !== null) {
+        setEndingToday(JSON.parse(storedEndingToday));
+      }
+    };
+    loadEndingTodayPreference();
+  }, []);
+
+  const handleSetEndingToday = (value) => {
+    setEndingToday(value);
+    AsyncStorage.setItem(StorageKeys.endingTodayKey, JSON.stringify(value));
+  };
 
   return (
     <View style={styles.body}>
@@ -30,9 +47,9 @@ export default function App() {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <CheckBox
               value={endingToday}
-              onValueChange={setEndingToday}
+              onValueChange={handleSetEndingToday}
             />
-            <TouchableOpacity onPress={() => setEndingToday(!endingToday)}>
+            <TouchableOpacity onPress={() => handleSetEndingToday(!endingToday)}>
               <Text style={{ color: endingToday ? 'red' : 'black' }}>
                 Ending Today
               </Text>

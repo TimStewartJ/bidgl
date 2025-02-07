@@ -3,7 +3,8 @@ const StorageKeys = {
   selectedLocationsKey: 'selected-locations',
   affiliateListKey: 'affiliate-list',
   favoritesKey: 'favorites',
-  auctionCollapsedKey: 'auction-collapsed', // New key for collapsed state
+  auctionCollapsedKey: 'auction-collapsed', 
+  endingTodayKey: 'ending-today',
 };
 
 export default StorageKeys;
