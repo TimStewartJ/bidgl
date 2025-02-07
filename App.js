@@ -4,7 +4,7 @@ import styles from './AppStyles';
 import LocationSelection from './components/LocationSelection';
 import NotificationProvider from './contexts/NotificationContext';
 import Notification from './components/Notification';
-import AuctionList from './components/AuctionList';
+import AuctionList from './components/AuctionsList';
 
 export default function App() {
   const [checkedAffiliates, updateCheckedAffiliates] = useState([]);

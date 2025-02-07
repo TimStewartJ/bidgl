@@ -16,6 +16,8 @@ const Auction = memo(({
   const [itemBlacklist, setItemBlacklist] = useState({});
 
   useEffect(() => {
+    if (isCollapsed) return;
+
     const checkAndFetchItems = async () => {
       // fetch from API
       axios.post('https://www.bidrl.com/api/getitems', toFormData({
@@ -35,7 +37,7 @@ const Auction = memo(({
       setItemBlacklist(blacklist);
     };
     checkAndFetchItems();
-  }, []);
+  }, [isCollapsed]);
 
   const updateItemBlacklist = async (id, add) => {
     let blacklist = JSON.parse(await AsyncStorage.getItem(StorageKeys.itemBlacklistKey));
@@ -119,6 +121,8 @@ const Auction = memo(({
 
 Auction.propTypes = {
   auction: shape({
+    id: string,
+    item_count: string,
     title: string,
   }).isRequired,
   location: shape({

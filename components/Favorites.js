@@ -25,7 +25,7 @@ const Favorites = memo(({ favorites, updateFavorites }) => {
         <AuctionItem
           item={favorite}
           showImage
-          updateBlacklist={(id) => updateFavorites(id, false)}
+          updateCollapsed={(id) => updateFavorites(id, false)}
           updateFavorites={() => null}
           updateFavoriteskey={favorite.id}
           key={favorite.id}
