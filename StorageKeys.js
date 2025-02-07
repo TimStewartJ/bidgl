@@ -1,9 +1,9 @@
 const StorageKeys = {
   itemBlacklistKey: 'item-blacklist',
-  auctionBlacklistKey: 'auction-blacklist',
   selectedLocationsKey: 'selected-locations',
   affiliateListKey: 'affiliate-list',
   favoritesKey: 'favorites',
+  auctionCollapsedKey: 'auction-collapsed', // New key for collapsed state
 };
 
 export default StorageKeys;

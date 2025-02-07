@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 import React, { memo, useEffect, useState } from 'react';
-import { func, shape, string } from 'prop-types';
+import { func, shape, string, bool } from 'prop-types';
 import axios, { toFormData } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-web';
@@ -9,7 +9,7 @@ import StorageKeys from '../StorageKeys';
 import datesAreOnSameDay from '../Utility';
 
 const Auction = memo(({
-  auction, location, updateBlacklist, updateFavorites,
+  auction, location, updateCollapsed, updateFavorites, isCollapsed,
 }) => {
   const [items, setItems] = useState(null);
   const [showImages, setShowImages] = useState(false);
@@ -81,8 +81,8 @@ const Auction = memo(({
       <TouchableOpacity style={{ backgroundColor: 'gray' }} onPress={() => setShowImages(!showImages)}>
         <Text>{showImages ? 'hide images' : 'show images'}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => updateBlacklist(auction.id, true)}>
-        <Text>Hide Auction</Text>
+      <TouchableOpacity onPress={() => updateCollapsed(auction.id, !isCollapsed)}>
+        <Text>{isCollapsed ? 'Expand Auction' : 'Collapse Auction'}</Text>
       </TouchableOpacity>
       <Text style={{
         fontSize: 18,
@@ -92,28 +92,27 @@ const Auction = memo(({
       >
         {auction.title}
       </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }}
-      >
-        {filteredItems.length > 0 ? filteredItems.map(
-          (item) => (
-            <AuctionItem
-              key={item.id}
-              item={item}
-              showImage={showImages}
-              updateBlacklist={updateItemBlacklist}
-              updateFavorites={updateFavorites}
-            />
-          ),
-        )
-          : <Text>Loading...</Text>}
-      </View>
-      <TouchableOpacity onPress={() => updateBlacklist(auction.id, true)}>
-        <Text>Hide Above Auction</Text>
-      </TouchableOpacity>
+      {!isCollapsed && (
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}
+        >
+          {filteredItems.length > 0 ? filteredItems.map(
+            (item) => (
+              <AuctionItem
+                key={item.id}
+                item={item}
+                showImage={showImages}
+                updateCollapsed={updateItemBlacklist}
+                updateFavorites={updateFavorites}
+              />
+            ),
+          )
+            : <Text>Loading...</Text>}
+        </View>
+      )}
     </View>
   );
 });
@@ -125,8 +124,9 @@ Auction.propTypes = {
   location: shape({
     id: string,
   }).isRequired,
-  updateBlacklist: func.isRequired,
+  updateCollapsed: func.isRequired,
   updateFavorites: func.isRequired,
+  isCollapsed: bool.isRequired,
 };
 
 export default Auction;

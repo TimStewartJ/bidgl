@@ -11,7 +11,7 @@ import datesAreOnSameDay from '../Utility';
 
 export default function AuctionList({ location, endingToday }) {
   const [auctions, setAuctions] = useState({});
-  const [auctionBlacklist, setAuctionBlacklist] = useState({});
+  const [auctionCollapsed, setAuctionCollapsed] = useState({});
   const [favorites, setFavorites] = useState([]);
 
   const { addMessage } = useNotification();
@@ -22,22 +22,14 @@ export default function AuctionList({ location, endingToday }) {
 
       const auctionIds = Object.values(res.data.auctions).map((auction) => auction.id);
 
-      // remove old auctions from blacklist
-      const blacklist = JSON.parse(await AsyncStorage.getItem(StorageKeys.itemBlacklistKey));
-      // initialize blacklist object for location
-      if (blacklist != null && blacklist[location.id] !== undefined) {
-        const newLocationObject = {};
-        blacklist[location.id] = Object.keys(blacklist[location.id])
-          .filter((key) => auctionIds.includes(key))
-          .reduce((obj, key) => {
-            newLocationObject[key] = blacklist[location.id][key];
-            return obj;
-          }, {});
-        blacklist[location.id] = newLocationObject;
+      // remove old auctions from collapsed state
+      const collapsed = JSON.parse(await AsyncStorage.getItem(StorageKeys.auctionCollapsedKey) ?? '{}');
+      if (collapsed != null && collapsed[location.id] !== undefined) {
+        collapsed[location.id] = collapsed[location.id].filter((id) => auctionIds.includes(id));
+        await AsyncStorage.setItem(StorageKeys.auctionCollapsedKey, JSON.stringify(collapsed));
       }
-      await AsyncStorage.setItem(StorageKeys.itemBlacklistKey, JSON.stringify(blacklist));
 
-      setAuctionBlacklist(JSON.parse(await AsyncStorage.getItem(StorageKeys.auctionBlacklistKey)));
+      setAuctionCollapsed(collapsed);
 
       setAuctions(res.data.auctions);
 
@@ -46,23 +38,23 @@ export default function AuctionList({ location, endingToday }) {
     });
   }, []);
 
-  const updateBlacklist = useCallback(async (id, add) => {
-    let blacklist = JSON.parse(await AsyncStorage.getItem(StorageKeys.auctionBlacklistKey));
-    // initialize blacklist object
-    if (blacklist == null) {
-      blacklist = {};
+  const updateCollapsed = useCallback(async (id, add) => {
+    let collapsed = JSON.parse(await AsyncStorage.getItem(StorageKeys.auctionCollapsedKey));
+    // initialize collapsed object
+    if (collapsed == null) {
+      collapsed = {};
     }
-    // initialize blacklist object for location
-    if (blacklist[location.id] === undefined) {
-      blacklist[location.id] = [];
+    // initialize collapsed object for location
+    if (collapsed[location.id] === undefined) {
+      collapsed[location.id] = [];
     }
-    blacklist[location.id] = blacklist[location.id].filter((i) => i !== id);
+    collapsed[location.id] = collapsed[location.id].filter((i) => i !== id);
     if (add) {
-      blacklist[location.id].push(id);
+      collapsed[location.id].push(id);
     }
-    await AsyncStorage.setItem(StorageKeys.auctionBlacklistKey, JSON.stringify(blacklist));
-    setAuctionBlacklist(blacklist);
-  }, [auctionBlacklist]);
+    await AsyncStorage.setItem(StorageKeys.auctionCollapsedKey, JSON.stringify(collapsed));
+    setAuctionCollapsed(collapsed);
+  }, [auctionCollapsed]);
 
   const updateFavorites = useCallback(async (id, add) => {
     console.log(`Adding ${id} to favorites...`);
@@ -89,9 +81,7 @@ export default function AuctionList({ location, endingToday }) {
   const callUpdateFavorites = useCallback((id, add) => updateFavorites(id, add), []);
 
   const auctionList = Object.values(auctions);
-  let auctionsToShow = auctionBlacklist != null && auctionBlacklist[location.id] !== undefined
-    ? auctionList.filter((auction) => !auctionBlacklist[location.id].includes(auction.id))
-    : auctionList;
+  let auctionsToShow = auctionList;
 
   auctionsToShow = !endingToday
     ? auctionsToShow
@@ -107,9 +97,10 @@ export default function AuctionList({ location, endingToday }) {
         <Auction
           auction={auction}
           location={location}
-          updateBlacklist={updateBlacklist}
+          updateCollapsed={updateCollapsed}
           updateFavorites={callUpdateFavorites}
           key={auction.id}
+          isCollapsed={auctionCollapsed[location.id]?.includes(auction.id)}
         />
       ))}
     </View>

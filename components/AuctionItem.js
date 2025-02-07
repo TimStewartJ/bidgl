@@ -1,4 +1,3 @@
-// import { View, Text } from 'react-native-web';
 import { bool, func, shape } from 'prop-types';
 import React from 'react';
 import {
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: 'blue',
   },
-  hide: {
+  collapse: {
     position: 'absolute',
     width: '10%',
     right: 0,
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
 });
 
 export default function AuctionItem({
-  item, showImage, updateBlacklist, updateFavorites,
+  item, showImage, updateCollapsed, updateFavorites,
 }) {
   const url = item.item_url || item.url;
   const dateTime = new Date((parseInt(item.end_time, 10) - item.time_offset) * 1000);
@@ -90,9 +89,9 @@ export default function AuctionItem({
         </Text>
       </View>
 
-      <View style={styles.hide}>
-        <Pressable onPress={() => updateBlacklist(item.id, true)}>
-          <Text accessibilityHint="hide item">X</Text>
+      <View style={styles.collapse}>
+        <Pressable onPress={() => updateCollapsed(item.id, true)}>
+          <Text accessibilityHint="collapse item">-</Text>
         </Pressable>
       </View>
 
@@ -109,6 +108,6 @@ export default function AuctionItem({
 AuctionItem.propTypes = {
   item: shape({}).isRequired,
   showImage: bool.isRequired,
-  updateBlacklist: func.isRequired,
+  updateCollapsed: func.isRequired,
   updateFavorites: func.isRequired,
 };
